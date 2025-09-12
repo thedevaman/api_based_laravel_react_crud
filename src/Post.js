@@ -12,6 +12,7 @@ const Post = () =>{
     
     const[posts,setPosts] = useState([]);
     const[form,setForm] = useState(model);
+    const[edit,setEdit] = useState(null);
 
     useEffect(()=>{
        fetchpost();
@@ -44,28 +45,75 @@ const Post = () =>{
     const handlesubmit = async (e) =>{
 
       e.preventDefault();
-      await Api.post("/store-post",form);
+      try{
+
+         if(edit)
+         {
+             const response = await Api.post(`/edit-post/${edit}`,form);
+              console.log("Response:",response.data)
+         }else{
+          const response = await Api.post("/store-post",form);
+           console.log("Response:",response.data)
+         }
+
+    
       setForm(model);
+      setEdit(null);
       fetchpost();
+      }catch(error)
+      {
+        console.error("Error response:",error.response?.data)
+      }
 
 
     };
+
+    const handleDelete = async (id) =>{
+        try{
+
+        const response = await Api.delete(`/delete-post/${id}`)
+        console.log("Response:",response.data);
+        fetchpost();
+        }catch(error)
+        {
+            console.error("Error response:", error.response?.data);
+        }
+    };
+
+    const handleEdit = async (post) =>{
+        try{
+
+           
+    
+              setForm(post)
+             setEdit(post.id)
+
+
+        }catch(error)
+        {
+            console.error("Error response:", error.response?.data);
+        }
+    }
 
 
 
     return(
         <div>
-            <h1>Post</h1>
+            <div>
+            <h1 className="text-3xl font-bold underline">Post</h1>
+           <div>
             <form onSubmit={handlesubmit}>
              <input 
+             className="border-solid border-2 border-indigo-300"
              type="text"
              placeholder="title"
              value={form.title}
              name= "title"
              onChange={handleInput}
              />
-             <br/>
+             
              <input 
+             className="border-solid border-2 border-indigo-300"
              type="text"
              placeholder="content"
              value={form.content}
@@ -73,17 +121,19 @@ const Post = () =>{
              onChange={handleInput}
              />
              <br/>
-             <button type="submit">Add Posts</button>
+             <button type="submit">{edit ? "Update Post":"Add Post"}</button>
 
 
             </form>
+            </div>
 
             <ul>
                 {posts.map((list,index)=>(
-                <li key={index}>{index+1}.){list.title} : {list.content}</li>
+                <li key={index}>{index+1}.){list.title} : {list.content} <button onClick={()=>handleDelete(list.id)}>Delete</button><button onClick={()=>handleEdit(list)}>Edit</button></li>
                 ))
                 }
             </ul>
+            </div>
         </div>
     )
 
