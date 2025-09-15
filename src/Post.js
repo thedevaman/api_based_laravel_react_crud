@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Api from "./Api";
+import 'remixicon/fonts/remixicon.css'
 
 
 const Post = () =>{
@@ -98,43 +99,76 @@ const Post = () =>{
 
 
     return(
-        <div>
-            <div>
+        
+        <>
+            <div className="container mx-auto px-2 sm:px-32">
             <h1 className="text-3xl font-bold underline">Post</h1>
-           <div>
-            <form onSubmit={handlesubmit}>
+           
+           <div className="flex md:flex-none">
+
+           <div className="mx-4 md:mx-none">
+            <form onSubmit={handlesubmit} className="flex flex-col">
+                <div className="w-80 my-2 flex flex-col">
+                <label className="font-black">Tiltle</label>
              <input 
-             className="border-solid border-2 border-indigo-300"
+             className="border-solid border-2 border-indigo-300 rounded"
              type="text"
-             placeholder="title"
+             placeholder="Enter Title"
              value={form.title}
              name= "title"
              onChange={handleInput}
              />
-             
+             </div>
+             <div className="w-80 my-2 flex flex-col">
+             <label className="font-black">Content</label>
              <input 
-             className="border-solid border-2 border-indigo-300"
+             className="border-solid border-2 border-indigo-300 rounded"
              type="text"
-             placeholder="content"
+             placeholder="Enter Content"
              value={form.content}
              name="content"
              onChange={handleInput}
              />
-             <br/>
-             <button type="submit">{edit ? "Update Post":"Add Post"}</button>
+             </div>
+             <button type="submit" className="border-solid border-2 border-lime-600 w-32 rounded bg-lime-600 text-white">
+                {edit ? "Update Post":"Add Post"}
+            </button>
 
 
             </form>
             </div>
 
-            <ul>
-                {posts.map((list,index)=>(
-                <li key={index}>{index+1}.){list.title} : {list.content} <button onClick={()=>handleDelete(list.id)}>Delete</button><button onClick={()=>handleEdit(list)}>Edit</button></li>
-                ))
-                }
-            </ul>
+            <div className="mx-4">
+
+           <table className="table w-full table-fixed border">
+            <thead>
+            <tr>
+                <th className="text-center">Sr. No</th>
+                <th className="text-center">Title</th>
+                <th className="text-center">Content</th>
+                <th className="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+             {posts.map((list,index)=>(
+              <tr key={index}>
+                <td className="text-center">{index+1}</td>
+                <td className="text-center">{list.title}</td>
+                <td className="text-center">{list.content}</td>
+                <td className="text-center"><button onClick={()=>handleDelete(list.id)}>
+                    <i class="ri-delete-bin-6-line"></i></button><button onClick={()=>handleEdit(list)}><i className="ri-edit-box-fill"></i></button>
+                </td>
+              </tr>
+             ))}
+             </tbody>
+            
+           </table>
             </div>
-        </div>
+
+            </div>
+
+            </div>
+        </>
     )
 
 }
